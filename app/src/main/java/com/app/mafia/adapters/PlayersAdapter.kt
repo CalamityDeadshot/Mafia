@@ -103,6 +103,7 @@ class PlayersAdapter : RecyclerView.Adapter<PlayersAdapter.ViewHolder> {
                     itemView.foulsText.visibility = View.VISIBLE*/
                 }
                 R.id.startSpeak -> {
+                    for (i in views) (i as PlayerCard).speaking = false
                     itemView.speaking = true
                 }
             }
@@ -112,12 +113,11 @@ class PlayersAdapter : RecyclerView.Adapter<PlayersAdapter.ViewHolder> {
 
     }
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): PlayersAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayersAdapter.ViewHolder {
         val view = inflater.inflate(R.layout.player_card_item, parent, false)
         views.add(ViewHolder(view).itemView)
+        if((view as PlayerCard).isDark()) view.setDarkTheme()
+        else view.setLightTheme()
         println("onCreateViewHolderCalled")
         return ViewHolder(view)
     }
@@ -129,7 +129,7 @@ class PlayersAdapter : RecyclerView.Adapter<PlayersAdapter.ViewHolder> {
         holder.itemView.model = model
         //println(views[position] == holder)
         views[position] = holder.itemView
-        holder.itemView.background = mContext.getDrawable(R.drawable.player_card_placeholder)
+        //holder.itemView.background = mContext.getDrawable(R.drawable.player_card_placeholder)
         //println(views[position] == holder)
         holder.itemView.foulsText.text = model.fouls.toString()
         holder.itemView.foulsText.visibility = if (model.fouls > 0) View.VISIBLE else View.INVISIBLE

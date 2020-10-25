@@ -2,6 +2,7 @@ package com.app.mafia
 
 import android.animation.Animator
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
 import android.widget.AdapterView
@@ -12,9 +13,11 @@ import com.app.mafia.helpers.*
 import com.app.mafia.helpers.eventTypes.Event
 import com.app.mafia.helpers.eventTypes.SubjectEvent
 import com.app.mafia.models.PlayerModel
+import com.app.mafia.views.PlayerCard
 import com.app.mafia.views.PlayerPopupMenu
 import kotlinx.android.synthetic.main.activity_distribution.playersRecycler
 import kotlinx.android.synthetic.main.activity_game.*
+import kotlinx.android.synthetic.main.main_game_button.view.*
 
 class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.OnItemClickListener, PlayerPopupMenu.OnMenuItemClickListener, View.OnClickListener {
 
@@ -45,6 +48,18 @@ class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.
 
     override fun onAnimationEnd(p0: Animator?) {
         when (p0) {
+            shrink -> {
+                mainButton.base.background = resources.getDrawable(
+                    if (currentTheme == THEME_LIGHT) R.drawable.main_button_background_light
+                    else R.drawable.main_button_background_dark
+                )
+                adapter.views.forEach{
+                    (it as PlayerCard).showRole = false
+                    if (currentTheme == THEME_LIGHT) it.setLightTheme()
+                    else it.setDarkTheme()
+                }
+                //adapter.notifyDataSetChanged()
+            }
         }
         super<AnimatedActivity>.onAnimationEnd(p0)
     }
@@ -105,7 +120,12 @@ class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.
         if (anyAnimationRunning()) return
         isDayNow = !isDayNow
         if (!isDayNow) daysCounter++
-        announcementText = "${if (isDayNow) "Day" else "Night"} $daysCounter"
+        if (isDayNow) {
+            announce("Day $daysCounter", THEME_LIGHT)
+        } else {
+            announce("Night $daysCounter", THEME_DARK)
+        }
+        //announce("${if (isDayNow) "Day" else "Night"} $daysCounter", if (isDayNow) R.color.colorPrimaryLight else R.color.darkBase)
         mainButton.animate().withLayer()
             .setDuration(400)
             .alpha(1f)

@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.app.Activity
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
@@ -23,6 +24,10 @@ open class AnimatedActivity : AppCompatActivity(), Animator.AnimatorListener {
     lateinit var fadeOut : ObjectAnimator
     lateinit var announcementFadeIn : ObjectAnimator
     //lateinit var announcementFadeOut : ObjectAnimator
+    val THEME_LIGHT = 0
+    val THEME_DARK = 1
+    var currentTheme = THEME_LIGHT
+    var baseColor = R.color.colorPrimaryLight
     private var hasAnnouncement = false
     private var activityToBeClosed = false
     private lateinit var announcement : TextView
@@ -137,6 +142,7 @@ open class AnimatedActivity : AppCompatActivity(), Animator.AnimatorListener {
     override fun onAnimationRepeat(p0: Animator?) {
     }
 
+    // Announcement: fadeOut -> shrink -> expand -> fadeIn
     override fun onAnimationEnd(p0: Animator?) {
         when (p0) {
             announcementFadeIn -> {
@@ -148,7 +154,9 @@ open class AnimatedActivity : AppCompatActivity(), Animator.AnimatorListener {
                     }
             }
             expand -> {
-                this.findViewById<View>(R.id.base).background = null
+                if (currentTheme == THEME_LIGHT) this.findViewById<View>(R.id.base).background = null
+                else                             this.findViewById<View>(R.id.base).setBackgroundColor(resources.getColor(R.color.darkBase))
+
                 this.findViewById<View>(R.id.bubble).visibility = View.GONE
                 this.findViewById<View>(R.id.opacityContainer).visibility = View.VISIBLE
                 if (hasAnnouncement) announcement.visibility = View.GONE
@@ -163,13 +171,15 @@ open class AnimatedActivity : AppCompatActivity(), Animator.AnimatorListener {
                         .alpha(1f)
                         .setDuration(800)
                         .withEndAction {
+                            this.findViewById<View>(R.id.bubble).background = resources.getDrawable(if (currentTheme == THEME_LIGHT) R.drawable.pulse_circle_light else R.drawable.pulse_circle_dark)
+                            supportActionBar!!.setBackgroundDrawable(ColorDrawable(resources.getColor(if (currentTheme == THEME_LIGHT) R.color.colorPrimary else R.color.dark900)))
                             expand.start()
                         }
                 }
             }
             fadeOut -> {
                 this.findViewById<View>(R.id.bubble).visibility = View.VISIBLE
-                this.findViewById<View>(R.id.base).setBackgroundColor(resources.getColor(R.color.colorPrimaryLight))
+                this.findViewById<View>(R.id.base).setBackgroundColor(resources.getColor(baseColor))
                 if (hasAnnouncement && !activityToBeClosed) {
                     announcement.visibility = View.VISIBLE
                     announcement.alpha = 1f
@@ -187,5 +197,11 @@ open class AnimatedActivity : AppCompatActivity(), Animator.AnimatorListener {
 
     fun anyAnimationRunning(): Boolean {
         return expand.isRunning || shrink.isRunning || fadeIn.isRunning || fadeOut.isRunning || announcementFadeIn.isRunning || announcement.visibility == View.VISIBLE
+    }
+
+    fun announce(text: String, theme: Int = THEME_LIGHT) {
+        announcementText = text
+        currentTheme = theme
+        this.baseColor = if (theme == THEME_LIGHT) R.color.colorPrimaryLight else R.color.dark800
     }
 }

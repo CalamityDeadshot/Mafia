@@ -6,16 +6,12 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.os.Build
-import android.os.VibrationEffect
-import android.os.Vibrator
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.AccelerateInterpolator
-import android.view.animation.Animation
 import android.view.animation.DecelerateInterpolator
-import android.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.app.mafia.R
 import com.app.mafia.helpers.Roles
@@ -26,6 +22,9 @@ class PlayerCard(context: Context) : ConstraintLayout(context), PlayerPopupMenu.
 
     lateinit var model: PlayerModel
     var popupMenu: PlayerPopupMenu
+    private val THEME_LIGHT = 0
+    private val THEME_DARK = 1
+    private var currentTheme = THEME_LIGHT
     var pulse: ObjectAnimator
     init {
         popupMenu = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -87,9 +86,17 @@ class PlayerCard(context: Context) : ConstraintLayout(context), PlayerPopupMenu.
                             showRoleButton.setImageResource(android.R.drawable.ic_menu_revert)
                             foulsText.visibility = View.INVISIBLE
                         } else {
-                            base.background = context.getDrawable(R.drawable.player_card_background)
-                            text.text = model.number.toString()
-                            text.setTextColor(resources.getColor(R.color.black_overlay))
+                            if (currentTheme == THEME_LIGHT) {
+                                base.background =
+                                    context.getDrawable(R.drawable.player_card_background_light)
+                                text.setTextColor(resources.getColor(R.color.black_overlay))
+                                foulsText.setTextColor(resources.getColor(R.color.black_overlay))
+                            } else {
+                                base.background =
+                                    context.getDrawable(R.drawable.player_card_background_dark)
+                                text.setTextColor(resources.getColor(android.R.color.white))
+                                foulsText.setTextColor(resources.getColor(android.R.color.white))
+                            }
                             showRoleButton.setImageResource(android.R.drawable.ic_menu_view)
                             text.text = model.number.toString()
                             foulsText.visibility = if (model.fouls > 0) View.VISIBLE else View.INVISIBLE
@@ -111,7 +118,11 @@ class PlayerCard(context: Context) : ConstraintLayout(context), PlayerPopupMenu.
             field = value
 
             if (value) pulse.start()
-            else pulse.end()
+            else {
+                pulse.end()
+                this.scaleX = 1f
+                this.scaleY = 1f
+            }
         }
 
     constructor(context: Context, attrs : AttributeSet) : this(context) {
@@ -126,5 +137,24 @@ class PlayerCard(context: Context) : ConstraintLayout(context), PlayerPopupMenu.
         return false
     }
 
+    fun setDarkTheme() {
+        base.background = context.getDrawable(R.drawable.player_card_background_dark)
+        text.setTextColor(resources.getColor(android.R.color.white))
+        foulsText.setTextColor(resources.getColor(android.R.color.white))
+        currentTheme = THEME_DARK
+    }
+
+    fun setLightTheme() {
+        base.background = context.getDrawable(R.drawable.player_card_background_light)
+        text.setTextColor(resources.getColor(R.color.black_overlay))
+        foulsText.setTextColor(resources.getColor(R.color.black_overlay))
+        currentTheme = THEME_LIGHT
+    }
+
+    fun evaluateBackground() {
+        this.background = context.getDrawable(R.drawable.player_card_placeholder)
+    }
+
+    fun isDark() = currentTheme == THEME_DARK
 
 }

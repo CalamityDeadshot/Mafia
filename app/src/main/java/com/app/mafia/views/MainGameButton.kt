@@ -6,13 +6,16 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.app.mafia.GameActivity
 import com.app.mafia.R
 import com.app.mafia.helpers.Global
 import kotlinx.android.synthetic.main.main_game_button.view.*
 
 class MainGameButton : ConstraintLayout, View.OnClickListener {
+    var mContext: Context
     constructor(context: Context) : super(context) {
         View.inflate(context, R.layout.main_game_button, this)
+        this.mContext = context
         endTimerButton.setOnClickListener(this)
     }
 
@@ -34,6 +37,7 @@ class MainGameButton : ConstraintLayout, View.OnClickListener {
                 recycle()
             }
         }
+        this.mContext = context
         endTimerButton.setOnClickListener(this)
     }
 
@@ -64,7 +68,7 @@ class MainGameButton : ConstraintLayout, View.OnClickListener {
                     }.start()
             }
         }
-    val speakingTime = 10000L
+    val speakingTime = 60000L
     var timer = object : CountDownTimer(speakingTime, 1000) {
         override fun onTick(millisUntilFinished: Long) {
             val time = millisUntilFinished / 1000
@@ -131,7 +135,10 @@ class MainGameButton : ConstraintLayout, View.OnClickListener {
 
     override fun onClick(view: View?) {
         when (view!!) {
-            endTimerButton -> timerRunning = false
+            endTimerButton -> {
+                timerRunning = false
+                (mContext as GameActivity).adapter.views.forEach{ (it as PlayerCard).speaking = false }
+            }
         }
     }
 }
