@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/startsVote"
+        android:title="Submits for voting..."/>
+    <item android:id="@+id/regFoul"
+        android:title="Receives a foul"/>
+    <item android:id="@+id/startSpeak"
+        android:title="Starts speaking"/>
+    <item android:id="@+id/gotKilled"
+        android:title="Gets killed"/>
+
+</menu>

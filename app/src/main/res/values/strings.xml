@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Mafia</string>
+    <string name="start_game">Start game</string>
+    <string name="num_of_players">Number of players</string>
+    <string name="num_of_peaceful">Peaceful players: </string>
+    <string name="num_of_mafias">Number of mafias</string>
+    <string name="player">Player</string>
+    <string name="role_distribution">Role distribution</string>
+    <string name="chooses_card">Chooses card</string>
+</resources>
