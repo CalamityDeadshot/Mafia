@@ -23,6 +23,8 @@ class PlayersAdapter : RecyclerView.Adapter<PlayersAdapter.ViewHolder> {
     private val mContext: Context
     private var clickListener : AdapterView.OnItemClickListener
     private var menuItemClickListener: PlayerPopupMenu.OnMenuItemClickListener
+    var voteRunning = false
+    var voteInitializer = -1
 
     constructor(context: Context, data: ArrayList<PlayerModel>, itemClickListener: AdapterView.OnItemClickListener, menuItemClickListener: PlayerPopupMenu.OnMenuItemClickListener) {
         this.inflater = LayoutInflater.from(context)
@@ -39,13 +41,24 @@ class PlayersAdapter : RecyclerView.Adapter<PlayersAdapter.ViewHolder> {
             itemView.setOnLongClickListener(this)
             itemView.showRoleButton.setOnClickListener(this)
             itemView.setOnTouchListener(this)
-            (itemView as PlayerCard).popupMenu.setOnMenuItemClickListener(this)
+            (itemView as PlayerCard).popupMenuDay.setOnMenuItemClickListener(this)
+            (itemView as PlayerCard).popupMenuNight.setOnMenuItemClickListener(this)
         }
 
         override fun onClick(view: View) {
 
             when (view) {
-                itemView -> {}
+                itemView -> {
+                    if (voteRunning) {
+                        if ((itemView as PlayerCard).isSelectedForVote) itemView.isSelectedForVote = false
+                        else {
+                            views.forEach {
+                                (it as PlayerCard).isSelectedForVote = false
+                            }
+                            itemView.isSelectedForVote = true
+                        }
+                    }
+                }
                 itemView.showRoleButton -> {
                     /*for (i in list) {
                         if (i.showed) {
@@ -75,7 +88,7 @@ class PlayersAdapter : RecyclerView.Adapter<PlayersAdapter.ViewHolder> {
                     vibrator.vibrate(100)
                 }
             }
-            (view as PlayerCard).popupMenu.show()
+            if ((view as PlayerCard).isDark()) view.popupMenuNight.show() else view.popupMenuDay.show()
 
             return true
         }
@@ -103,10 +116,26 @@ class PlayersAdapter : RecyclerView.Adapter<PlayersAdapter.ViewHolder> {
                     itemView.foulsText.visibility = View.VISIBLE*/
                 }
                 R.id.startSpeak -> {
-                    for (i in views) (i as PlayerCard).speaking = false
-                    itemView.speaking = true
+                    var alreadyRunning = false
+                    for (i in views) {
+                        alreadyRunning = (i as PlayerCard).speaking
+                        i.speaking = false
+                    }
+                    itemView.speaking = alreadyRunning
+                }
+                R.id.startsVote -> {
+                    voteRunning = true
+                    voteInitializer = list[adapterPosition].number
+                    views.forEach {
+                        (it as PlayerCard).enterVotingState()
+                    }
+                }
+                R.id.gotKilled -> {
+                    list[adapterPosition].isDead = true
+                    notifyItemChanged(adapterPosition)
                 }
             }
+            itemView.onMenuItemClick(item, list[adapterPosition].number)
             menuItemClickListener.onMenuItemClick(item, list[adapterPosition].number)
             return false
         }
@@ -115,10 +144,11 @@ class PlayersAdapter : RecyclerView.Adapter<PlayersAdapter.ViewHolder> {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayersAdapter.ViewHolder {
         val view = inflater.inflate(R.layout.player_card_item, parent, false)
+
         views.add(ViewHolder(view).itemView)
         if((view as PlayerCard).isDark()) view.setDarkTheme()
         else view.setLightTheme()
-        println("onCreateViewHolderCalled")
+
         return ViewHolder(view)
     }
 

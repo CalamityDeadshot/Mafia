@@ -40,7 +40,7 @@ class GameEvent: Serializable {
         eventTypeEnum = EVENT_TYPE_ACTOR_SUBJECT // ActorSubjectEvent
         eventSubtypeEnum = e.ordinal
         eString = when (e) {
-            ActorSubjectEvent.VOTE_SUBMIT -> "Player $actor submits player $subject for a vote"
+            ActorSubjectEvent.VOTE_SUBMIT -> if (actor == subject) "Player $actor submits themselves for a vote" else "Player $actor submits player $subject for a vote"
         }
         eventTypeGeneral = TYPE_BASIC
     }

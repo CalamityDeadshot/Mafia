@@ -12,28 +12,88 @@ import android.view.MenuItem
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.app.mafia.R
 import com.app.mafia.helpers.Roles
 import com.app.mafia.models.PlayerModel
 import kotlinx.android.synthetic.main.player_card.view.*
 
+
 class PlayerCard(context: Context) : ConstraintLayout(context), PlayerPopupMenu.OnMenuItemClickListener {
 
     lateinit var model: PlayerModel
-    var popupMenu: PlayerPopupMenu
+    var popupMenuDay: PlayerPopupMenu
+    var popupMenuNight: PlayerPopupMenu
     private val THEME_LIGHT = 0
     private val THEME_DARK = 1
     private var currentTheme = THEME_LIGHT
+
+    var isSelectedForVote = false
+        set(value) {
+            field = value
+
+            if (value) {
+                animCircle.animate().withLayer()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setDuration(200)
+                    .setInterpolator(DecelerateInterpolator())
+                    .withEndAction {
+                        tick.animate().withLayer()
+                            .alpha(1f)
+                            .setDuration(200)
+                            .start()
+                    }
+                    .start()
+            } else {
+                animCircle.animate().withLayer()
+                    .scaleX(0f)
+                    .scaleY(0f)
+                    .setDuration(200)
+                    .setInterpolator(DecelerateInterpolator())
+                    .withEndAction {
+                        tick.animate().withLayer()
+                            .alpha(0f)
+                            .setDuration(200)
+                            .start()
+                    }
+                    .start()
+
+                /*tick.animate().withLayer()
+                    .alpha(0f)
+                    .setDuration(200)
+                    .withEndAction {
+                        animCircle.animate().withLayer()
+                            .scaleX(0f)
+                            .scaleY(0f)
+                            .setDuration(200)
+                            .setInterpolator(DecelerateInterpolator())
+                            .start()
+                    }
+                    .start()*/
+            }
+        }
     var pulse: ObjectAnimator
     init {
-        popupMenu = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-            PlayerPopupMenu(this.context, this, Gravity.NO_GRAVITY, R.attr.actionDropDownStyle, 0)
+        var wrapper: Context = ContextThemeWrapper(context, R.style.PopupMenuLight)
+        popupMenuDay = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            PlayerPopupMenu(wrapper, this, Gravity.NO_GRAVITY, R.attr.actionDropDownStyle, 0)
         } else {
-            PlayerPopupMenu(this.context, this, Gravity.NO_GRAVITY)
+            PlayerPopupMenu(wrapper, this, Gravity.NO_GRAVITY)
         }
-        popupMenu.setOnMenuItemClickListener(this)
-        (context as Activity).menuInflater.inflate(R.menu.player_card_menu, popupMenu.menu)
+        popupMenuDay.setOnMenuItemClickListener(this)
+        (context as Activity).menuInflater.inflate(R.menu.player_card_menu_day, popupMenuDay.menu)
+
+        wrapper = ContextThemeWrapper(context, R.style.PopupMenuDark)
+        popupMenuNight = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            PlayerPopupMenu(wrapper, this, Gravity.NO_GRAVITY, R.attr.actionDropDownStyle, 0)
+        } else {
+            PlayerPopupMenu(wrapper, this, Gravity.NO_GRAVITY)
+        }
+        popupMenuNight.setOnMenuItemClickListener(this)
+        (context as Activity).menuInflater.inflate(R.menu.player_card_menu_night, popupMenuNight.menu)
+
         pulse = ObjectAnimator.ofPropertyValuesHolder(
             this,
             PropertyValuesHolder.ofFloat("scaleX", .95f),
@@ -131,6 +191,7 @@ class PlayerCard(context: Context) : ConstraintLayout(context), PlayerPopupMenu.
 
     fun initView() {
         View.inflate(context, R.layout.player_card, this)
+        base.clipToOutline = true
     }
 
     override fun onMenuItemClick(item: MenuItem, position: Int): Boolean {
@@ -151,8 +212,21 @@ class PlayerCard(context: Context) : ConstraintLayout(context), PlayerPopupMenu.
         currentTheme = THEME_LIGHT
     }
 
-    fun evaluateBackground() {
-        this.background = context.getDrawable(R.drawable.player_card_placeholder)
+    fun enterVotingState() {
+        checkboxContainer.animate().withLayer()
+            .scaleX(1f)
+            .scaleY(1f)
+            .setDuration(200)
+            .start()
+    }
+
+    fun leaveVotingState() {
+        isSelectedForVote = false
+        checkboxContainer.animate().withLayer()
+            .scaleX(0f)
+            .scaleY(0f)
+            .setDuration(200)
+            .start()
     }
 
     fun isDark() = currentTheme == THEME_DARK

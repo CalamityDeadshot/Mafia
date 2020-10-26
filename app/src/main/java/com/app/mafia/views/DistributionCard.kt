@@ -44,6 +44,6 @@ class DistributionCard(context: Context) : ConstraintLayout(context) {
 
     fun initView() {
         View.inflate(context, R.layout.distribution_card, this)
-
+        base.clipToOutline = true
     }
 }

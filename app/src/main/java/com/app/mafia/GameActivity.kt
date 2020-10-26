@@ -10,6 +10,7 @@ import android.widget.Toolbar
 import androidx.recyclerview.widget.GridLayoutManager
 import com.app.mafia.adapters.PlayersAdapter
 import com.app.mafia.helpers.*
+import com.app.mafia.helpers.eventTypes.ActorSubjectEvent
 import com.app.mafia.helpers.eventTypes.Event
 import com.app.mafia.helpers.eventTypes.SubjectEvent
 import com.app.mafia.models.PlayerModel
@@ -25,6 +26,7 @@ class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.
     lateinit var adapter: PlayersAdapter
     var daysCounter = 0
     var isDayNow = true
+    var submittedForVote: ArrayList<Int> = ArrayList()
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_game)
         announcementText = "Day 0"
@@ -72,7 +74,12 @@ class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.
         when (item.itemId) {
             R.id.gotKilled -> game.addEvent(GameEvent(SubjectEvent.KILL, position))
             R.id.regFoul -> game.addEvent((GameEvent(SubjectEvent.FOUL, position)))
-            R.id.startSpeak -> mainButton.timerRunning = true
+            R.id.startSpeak -> {
+                if (!mainButton.timerRunning) mainButton.timerRunning = true
+            }
+            R.id.startsVote -> {
+                mainButton.waitingForVoteConfirmation = true
+            }
         }
 
         return false
@@ -106,6 +113,10 @@ class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.
         when (view) {
             mainButton -> {
                 if (mainButton.timerRunning) return
+                if (mainButton.waitingForVoteConfirmation) {
+                    confirmVote()
+                    return
+                }
                 nextTimeCycle()
             }
             playersRecycler -> mainButton.stateSelected = false
@@ -134,6 +145,28 @@ class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.
                 mainButton.text = "End ${(if (isDayNow) "Day" else "Night").toLowerCase()} $daysCounter"
                 mainButton.stateSelected = false
             }
+        submittedForVote.clear()
         game.addEvent(GameEvent(if (isDayNow) Event.DAY else Event.NIGHT, daysCounter))
+    }
+
+    fun confirmVote() {
+        if (!mainButton.stateSelected) {
+            mainButton.stateSelected = true
+            return
+        }
+        if (anyAnimationRunning()) return
+        var submitted = -1
+        adapter.views.forEach {
+            if ((it as PlayerCard).isSelectedForVote) submitted = it.model.number
+            it.isSelectedForVote = false
+            it.leaveVotingState()
+            adapter.voteRunning = false
+        }
+        if (submitted != -1) {
+            game.addEvent(GameEvent(ActorSubjectEvent.VOTE_SUBMIT, adapter.voteInitializer, submitted))
+            submittedForVote.add(submitted)
+        }
+        mainButton.waitingForVoteConfirmation = false
+        mainButton.stateSelected = false
     }
 }

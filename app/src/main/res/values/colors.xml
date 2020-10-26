@@ -5,16 +5,18 @@
     <color name="colorPrimaryLight">#ff6659</color>
     <color name="commissionerColor">#1565c0</color>
     <color name="peacefulColor">#DDD</color>
+    <color name="colorGreen">#4BB543</color>
 
 <!--  Dark theme colors  -->
     <color name="darkBase">#121212</color>
     <color name="dark900">#212121</color>
     <color name="dark800">#424242</color>
     <color name="darkGrey">#525252</color>
+
     <color name="colorSecondary">#ab47bc</color>
     <color name="colorSecondaryLight">#df78ef</color>
     <color name="colorSecondaryDark">#790e8b</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="colorAccent">@color/colorGreen</color>
 
     <color name="black_overlay">#66000000</color>
 </resources>

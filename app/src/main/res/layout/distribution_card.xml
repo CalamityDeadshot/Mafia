@@ -6,6 +6,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:padding="2dp"
+    android:clipToPadding="false"
     android:outlineProvider="background"
     android:background="@drawable/player_card_background_light">
 

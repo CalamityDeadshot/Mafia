@@ -24,6 +24,22 @@ class MainGameButton : ConstraintLayout, View.OnClickListener {
             field = value
             textView.text = value
         }
+    var oldText = ""
+    var waitingForVoteConfirmation = false
+        set(value) {
+            field = value
+            if (value) oldText = text!!
+            textView.animate().withLayer()
+                .alpha(0f)
+                .setDuration(200)
+                .withEndAction {
+                    text = if (value) "Confirm" else oldText
+                    textView.animate().withLayer()
+                        .alpha(1f)
+                        .start()
+                }
+                .start()
+        }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         View.inflate(context, R.layout.main_game_button, this)
@@ -122,6 +138,9 @@ class MainGameButton : ConstraintLayout, View.OnClickListener {
                     .alpha(0f)
                     .setDuration(300)
                     .withEndAction {
+                        timerOverlay.clearAnimation()
+                        timerOverlay.animate().cancel()
+
                         timerBase.visibility = View.GONE
                         textView.visibility = View.VISIBLE
                         textView.animate().withLayer()
