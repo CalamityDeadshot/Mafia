@@ -25,7 +25,7 @@ class MainGameButton : ConstraintLayout, View.OnClickListener {
             textView.text = value
         }
     var oldText = ""
-    var waitingForVoteConfirmation = false
+    var waitingForConfirmation = false
         set(value) {
             field = value
             if (value) oldText = text!!

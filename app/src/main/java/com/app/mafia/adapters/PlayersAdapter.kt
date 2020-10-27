@@ -9,6 +9,7 @@ import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
+import com.app.mafia.GameActivity
 import com.app.mafia.R
 import com.app.mafia.models.PlayerModel
 import com.app.mafia.views.PlayerCard
@@ -43,6 +44,7 @@ class PlayersAdapter : RecyclerView.Adapter<PlayersAdapter.ViewHolder> {
             itemView.setOnTouchListener(this)
             (itemView as PlayerCard).popupMenuDay.setOnMenuItemClickListener(this)
             (itemView as PlayerCard).popupMenuNight.setOnMenuItemClickListener(this)
+            (itemView as PlayerCard).popupMenuVote.setOnMenuItemClickListener(this)
         }
 
         override fun onClick(view: View) {
@@ -80,6 +82,11 @@ class PlayersAdapter : RecyclerView.Adapter<PlayersAdapter.ViewHolder> {
 
         override fun onLongClick(view: View?): Boolean {
             val vibrator = mContext.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            if ((itemView as PlayerCard).model.isDead) {
+                Toast.makeText(mContext, "Player is dead", Toast.LENGTH_LONG).show()
+                vibrator.vibrate(300)
+                return false
+            }
             when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
                     vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE))
@@ -88,7 +95,19 @@ class PlayersAdapter : RecyclerView.Adapter<PlayersAdapter.ViewHolder> {
                     vibrator.vibrate(100)
                 }
             }
-            if ((view as PlayerCard).isDark()) view.popupMenuNight.show() else view.popupMenuDay.show()
+            if (!voteRunning) {
+                if (!(view as PlayerCard).isBeingVoted) {
+                    if (view.isDark()) view.popupMenuNight.show() else view.popupMenuDay.show()
+                } else view.popupMenuVote.show()
+            } else {
+                if (itemView.isSelectedForVote) itemView.isSelectedForVote = false
+                else {
+                    views.forEach {
+                        (it as PlayerCard).isSelectedForVote = false
+                    }
+                    itemView.isSelectedForVote = true
+                }
+            }
 
             return true
         }
@@ -131,8 +150,16 @@ class PlayersAdapter : RecyclerView.Adapter<PlayersAdapter.ViewHolder> {
                     }
                 }
                 R.id.gotKilled -> {
-                    list[adapterPosition].isDead = true
-                    notifyItemChanged(adapterPosition)
+                    try {
+                        if (!(mContext as GameActivity).playerKilled) {
+                            list[adapterPosition].isDead = true
+                            //notifyItemChanged(adapterPosition)
+                            itemView.killed = true
+                        }
+                    } catch (e: Exception) {}
+                }
+                R.id.votedOut -> {
+                    itemView.kicked = true
                 }
             }
             itemView.onMenuItemClick(item, list[adapterPosition].number)
@@ -163,6 +190,7 @@ class PlayersAdapter : RecyclerView.Adapter<PlayersAdapter.ViewHolder> {
         //println(views[position] == holder)
         holder.itemView.foulsText.text = model.fouls.toString()
         holder.itemView.foulsText.visibility = if (model.fouls > 0) View.VISIBLE else View.INVISIBLE
+        if (holder.itemView.isDark()) holder.itemView.setDarkTheme() else holder.itemView.setLightTheme()
         //holder.itemView.showRole = model.showed
     }
 

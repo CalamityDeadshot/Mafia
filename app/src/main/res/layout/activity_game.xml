@@ -90,9 +90,10 @@
 
     <TextView
         android:id="@+id/announcement"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:alpha="0"
+        android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="60sp"
         android:visibility="visible"

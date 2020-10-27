@@ -42,7 +42,6 @@ open class AnimatedActivity : AppCompatActivity(), Animator.AnimatorListener {
             activityToBeClosed = false
             fadeOut.start()
         }
-    var activityOpened = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (hasAnnouncement) {
@@ -169,7 +168,7 @@ open class AnimatedActivity : AppCompatActivity(), Animator.AnimatorListener {
                 } else {
                     announcement.animate().withLayer()
                         .alpha(1f)
-                        .setDuration(800)
+                        .setDuration(1000)
                         .withEndAction {
                             this.findViewById<View>(R.id.bubble).background = resources.getDrawable(if (currentTheme == THEME_LIGHT) R.drawable.pulse_circle_light else R.drawable.pulse_circle_dark)
                             supportActionBar!!.setBackgroundDrawable(ColorDrawable(resources.getColor(if (currentTheme == THEME_LIGHT) R.color.colorPrimary else R.color.dark900)))

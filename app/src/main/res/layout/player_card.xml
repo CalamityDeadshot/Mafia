@@ -95,16 +95,94 @@
             android:src="@drawable/ic_tick"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_tick" />
+            app:srcCompat="@drawable/ic_tick"
+            tools:alpha="1"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!--<CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleY="0"
+        android:clipToPadding="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />-->
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone">
+
+        <View
+            android:id="@+id/view7"
+            android:layout_width="5dp"
+            android:layout_height="match_parent"
+            android:background="#000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/view6"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/view6"
+            android:layout_width="5dp"
+            android:layout_height="match_parent"
+            android:background="#000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/view8"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/view7"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <View
+            android:id="@+id/view8"
+            android:layout_width="5dp"
+            android:layout_height="match_parent"
+            android:background="#000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/view9"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/view6"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <View
+            android:id="@+id/view9"
+            android:layout_width="5dp"
+            android:layout_height="match_parent"
+            android:background="#000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/view10"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/view8"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <View
+            android:id="@+id/view10"
+            android:layout_width="5dp"
+            android:layout_height="match_parent"
+            android:background="#000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/view9"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/sight"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_sight"
+        android:scaleX="15"
+        android:scaleY="15"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

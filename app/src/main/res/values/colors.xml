@@ -6,6 +6,7 @@
     <color name="commissionerColor">#1565c0</color>
     <color name="peacefulColor">#DDD</color>
     <color name="colorGreen">#4BB543</color>
+    <color name="playerCardColor">#bbb</color>
 
 <!--  Dark theme colors  -->
     <color name="darkBase">#121212</color>

@@ -2,11 +2,10 @@ package com.app.mafia
 
 import android.animation.Animator
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
 import android.widget.AdapterView
-import android.widget.Toolbar
+import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import com.app.mafia.adapters.PlayersAdapter
 import com.app.mafia.helpers.*
@@ -27,6 +26,9 @@ class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.
     var daysCounter = 0
     var isDayNow = true
     var submittedForVote: ArrayList<Int> = ArrayList()
+    var votedOut: ArrayList<Int> = ArrayList()
+    var playerKilled = false
+    var votingRunning = false
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_game)
         announcementText = "Day 0"
@@ -72,13 +74,24 @@ class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.
 
     override fun onMenuItemClick(item: MenuItem, position: Int): Boolean {
         when (item.itemId) {
-            R.id.gotKilled -> game.addEvent(GameEvent(SubjectEvent.KILL, position))
+            R.id.gotKilled -> {
+                if (!playerKilled) {
+                    playerKilled = true
+                    game.addEvent(GameEvent(SubjectEvent.KILL, position))
+                } else {
+                    Toast.makeText(this, "Player killed already", Toast.LENGTH_LONG).show()
+                }
+            }
             R.id.regFoul -> game.addEvent((GameEvent(SubjectEvent.FOUL, position)))
             R.id.startSpeak -> {
                 if (!mainButton.timerRunning) mainButton.timerRunning = true
             }
             R.id.startsVote -> {
-                mainButton.waitingForVoteConfirmation = true
+                mainButton.waitingForConfirmation = true
+            }
+            R.id.votedOut -> {
+                votedOut.add(position)
+                game.addEvent(GameEvent(SubjectEvent.VOTE_KICK, position))
             }
         }
 
@@ -112,13 +125,40 @@ class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.
     override fun onClick(view: View?) {
         when (view) {
             mainButton -> {
+                if (anyAnimationRunning()) return
                 if (mainButton.timerRunning) return
-                if (mainButton.waitingForVoteConfirmation) {
+                if (mainButton.waitingForConfirmation) {
                     confirmVote()
+                    return
+                }
+                if (submittedForVote.size > 0) {
+                    if (!votingRunning) {
+                        initiateVoting()
+                    } else {
+                        if (!mainButton.stateSelected) {
+                            mainButton.stateSelected = true
+                            return
+                        }
+                        votingRunning = false
+                        var kickedPlayers = ""
+                        for (i in 0 until votedOut.size) {
+                            kickedPlayers += if (i != votedOut.size - 1) "${votedOut[i]}, "
+                            else "${if (votedOut.size == 1) "" else "and "} ${votedOut[i]}"
+                        }
+                        announce(if (votedOut.size > 0) "${if (votedOut.size == 1) "Player" else "Players"} $kickedPlayers ${if (votedOut.size == 1) "is" else "are"} voted out from the game" else "No one is voted out")
+                        adapter.views.forEach {
+                            (it as PlayerCard).isBeingVoted = false
+                            it.setEnabled(!it.kicked && !it.killed && !votedOut.contains(it.model.number))
+                        }
+                        submittedForVote.clear(); votedOut.clear()
+                        mainButton.text = "End day $daysCounter"
+                        mainButton.stateSelected = false
+                    }
                     return
                 }
                 nextTimeCycle()
             }
+
             playersRecycler -> mainButton.stateSelected = false
         }
     }
@@ -128,7 +168,7 @@ class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.
             mainButton.stateSelected = true
             return
         }
-        if (anyAnimationRunning()) return
+        playerKilled = false
         isDayNow = !isDayNow
         if (!isDayNow) daysCounter++
         if (isDayNow) {
@@ -145,7 +185,6 @@ class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.
                 mainButton.text = "End ${(if (isDayNow) "Day" else "Night").toLowerCase()} $daysCounter"
                 mainButton.stateSelected = false
             }
-        submittedForVote.clear()
         game.addEvent(GameEvent(if (isDayNow) Event.DAY else Event.NIGHT, daysCounter))
     }
 
@@ -164,9 +203,20 @@ class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.
         }
         if (submitted != -1) {
             game.addEvent(GameEvent(ActorSubjectEvent.VOTE_SUBMIT, adapter.voteInitializer, submitted))
-            submittedForVote.add(submitted)
+            if (!submittedForVote.contains(submitted)) submittedForVote.add(submitted)
+            mainButton.oldText = "Proceed to voting"
         }
-        mainButton.waitingForVoteConfirmation = false
+        mainButton.waitingForConfirmation = false
         mainButton.stateSelected = false
+    }
+
+    fun initiateVoting() {
+        votingRunning = true
+        announce("Let the voting begin")
+        mainButton.text = "Confirm"
+        adapter.views.forEach {
+            if (submittedForVote.contains((it as PlayerCard).model.number)) it.isBeingVoted = true
+            else it.setEnabled(false)
+        }
     }
 }

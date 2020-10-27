@@ -3,7 +3,7 @@
     android:color="@color/colorPrimaryLight">
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="@android:color/darker_gray"/>
+            <solid android:color="@color/playerCardColor"/>
             <corners android:radius="10dp"/>
         </shape>
     </item>

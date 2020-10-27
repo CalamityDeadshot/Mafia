@@ -11,6 +11,7 @@ import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.AccelerateInterpolator
+import android.view.animation.BounceInterpolator
 import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -25,10 +26,11 @@ class PlayerCard(context: Context) : ConstraintLayout(context), PlayerPopupMenu.
     lateinit var model: PlayerModel
     var popupMenuDay: PlayerPopupMenu
     var popupMenuNight: PlayerPopupMenu
+    var popupMenuVote: PlayerPopupMenu
     private val THEME_LIGHT = 0
     private val THEME_DARK = 1
     private var currentTheme = THEME_LIGHT
-
+    var isBeingVoted = false
     var isSelectedForVote = false
         set(value) {
             field = value
@@ -74,6 +76,37 @@ class PlayerCard(context: Context) : ConstraintLayout(context), PlayerPopupMenu.
                     .start()*/
             }
         }
+    var kicked = false
+        set(value) {
+            field = value
+
+            if (value) {
+                cage.animate().withLayer()
+                    .scaleY(1.05f)
+                    .setDuration(1500)
+                    .setInterpolator(BounceInterpolator())
+                    .withEndAction {
+                        setEnabled(false)
+                    }
+                    .start()
+            }
+        }
+    var killed = false
+        set(value) {
+            field = value
+            if (value) {
+                sight.animate().withLayer()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setDuration(700)
+                    .setInterpolator(DecelerateInterpolator())
+                    .withEndAction {
+                        setEnabled(false)
+                    }
+                    .start()
+            }
+
+        }
     var pulse: ObjectAnimator
     init {
         var wrapper: Context = ContextThemeWrapper(context, R.style.PopupMenuLight)
@@ -92,7 +125,15 @@ class PlayerCard(context: Context) : ConstraintLayout(context), PlayerPopupMenu.
             PlayerPopupMenu(wrapper, this, Gravity.NO_GRAVITY)
         }
         popupMenuNight.setOnMenuItemClickListener(this)
-        (context as Activity).menuInflater.inflate(R.menu.player_card_menu_night, popupMenuNight.menu)
+        context.menuInflater.inflate(R.menu.player_card_menu_night, popupMenuNight.menu)
+
+        popupMenuVote = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            PlayerPopupMenu(context, this, Gravity.NO_GRAVITY, R.attr.actionDropDownStyle, 0)
+        } else {
+            PlayerPopupMenu(context, this, Gravity.NO_GRAVITY)
+        }
+        popupMenuVote.setOnMenuItemClickListener(this)
+        context.menuInflater.inflate(R.menu.player_card_menu_voting, popupMenuVote.menu)
 
         pulse = ObjectAnimator.ofPropertyValuesHolder(
             this,
@@ -192,6 +233,8 @@ class PlayerCard(context: Context) : ConstraintLayout(context), PlayerPopupMenu.
     fun initView() {
         View.inflate(context, R.layout.player_card, this)
         base.clipToOutline = true
+        cage.pivotY = 0f
+        this.setEnabled(true)
     }
 
     override fun onMenuItemClick(item: MenuItem, position: Int): Boolean {
@@ -226,6 +269,15 @@ class PlayerCard(context: Context) : ConstraintLayout(context), PlayerPopupMenu.
             .scaleX(0f)
             .scaleY(0f)
             .setDuration(200)
+            .start()
+    }
+
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+
+        base.animate().withLayer()
+            .alpha(if (enabled) 1f else .5f)
+            .setDuration(500)
             .start()
     }
 
