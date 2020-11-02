@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/regFoul"
-        android:title="Receives a foul"/>
+        android:title="@string/receives_a_foul"/>
     <item android:id="@+id/gotKilled"
-        android:title="Gets killed"/>
+        android:title="@string/gets_killed"/>
 
 </menu>

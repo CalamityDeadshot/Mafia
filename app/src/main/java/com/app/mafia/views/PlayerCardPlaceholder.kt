@@ -35,10 +35,10 @@ class PlayerCardPlaceholder(context: Context, var number: Int) : ConstraintLayou
                             Roles.EMPTY -> R.drawable.player_card_placeholder
                         })
                         text.text = when (value) {
-                            Roles.PEACEFUL -> "P"
-                            Roles.COMMISSIONER -> "C"
-                            Roles.DON -> "D"
-                            Roles.MAFIA -> "M"
+                            Roles.PEACEFUL -> resources.getString(R.string.peaceful)
+                            Roles.COMMISSIONER -> resources.getString(R.string.commissioner)
+                            Roles.DON -> resources.getString(R.string.don)
+                            Roles.MAFIA -> resources.getString(R.string.mafia)
                             Roles.EMPTY -> (number + 1).toString()
                         }
                         playerText.visibility = when (value) {

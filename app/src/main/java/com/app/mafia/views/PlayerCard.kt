@@ -169,10 +169,10 @@ class PlayerCard(context: Context) : ConstraintLayout(context), PlayerPopupMenu.
                                 }
                             )
                             text.text = when (model.role) {
-                                Roles.PEACEFUL -> "P"
-                                Roles.COMMISSIONER -> "C"
-                                Roles.DON -> "D"
-                                Roles.MAFIA -> "M"
+                                Roles.PEACEFUL -> resources.getString(R.string.peaceful)
+                                Roles.COMMISSIONER -> resources.getString(R.string.commissioner)
+                                Roles.DON -> resources.getString(R.string.don)
+                                Roles.MAFIA -> resources.getString(R.string.mafia)
                                 Roles.EMPTY -> model.number.toString()
                             }
                             text.setTextColor(

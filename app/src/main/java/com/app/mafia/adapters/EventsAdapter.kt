@@ -70,6 +70,7 @@ class EventsAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 Event.NIGHT -> R.drawable.ic_moon
             })
         }
+        holder.itemView.timeText.text = event.time
     }
 
     override fun getItemCount(): Int {
@@ -80,9 +81,11 @@ class EventsAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder> {
         RecyclerView.ViewHolder(itemView) {
         var eventIcon: ImageView
         var eventText: TextView
+        var timeText: TextView
         init {
             eventIcon = itemView.event_icon
             eventText = itemView.event_text
+            timeText = itemView.timeText
         }
     }
 
@@ -90,9 +93,11 @@ class EventsAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder> {
         RecyclerView.ViewHolder(itemView) {
         var eventIcon: ImageView
         var eventText: TextView
+        var timeText: TextView
         init {
             eventIcon = itemView.event_icon
             eventText = itemView.event_text
+            timeText = itemView.timeText
         }
     }
 

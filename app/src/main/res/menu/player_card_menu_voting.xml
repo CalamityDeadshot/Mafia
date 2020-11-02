@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/votedOut"
-        android:title="Voted out"/>
+        android:title="@string/voted_out"/>
     <item android:id="@+id/regFoul"
-        android:title="Receives a foul"/>
+        android:title="@string/receives_a_foul"/>
 
 </menu>

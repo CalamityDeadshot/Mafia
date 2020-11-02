@@ -83,7 +83,7 @@ class PlayersAdapter : RecyclerView.Adapter<PlayersAdapter.ViewHolder> {
         override fun onLongClick(view: View?): Boolean {
             val vibrator = mContext.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             if ((itemView as PlayerCard).model.isDead) {
-                Toast.makeText(mContext, "Player is dead", Toast.LENGTH_LONG).show()
+                Toast.makeText(mContext, R.string.player_is_dead, Toast.LENGTH_LONG).show()
                 vibrator.vibrate(300)
                 return false
             }

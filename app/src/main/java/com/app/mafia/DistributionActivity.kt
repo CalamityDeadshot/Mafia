@@ -52,7 +52,7 @@ class DistributionActivity : AnimatedActivity(), Animator.AnimatorListener, Adap
         val don = mafiasNumbers[Random.nextInt(0, numberOfMafias - 1)]
         var comm = Random.nextInt(0, numberOfPlayers - 1)
         while (mafiasNumbers.contains(comm)) comm = Random.nextInt(0, numberOfPlayers - 1)
-        println("mafias: ${mafiasNumbers.contentToString()}, don: $don, comm: $comm")
+        //println("mafias: ${mafiasNumbers.contentToString()}, don: $don, comm: $comm")
         val data : ArrayList<DistributionItemModel> = ArrayList()
         for (i in 0 until numberOfPlayers) {
             data.add(DistributionItemModel(

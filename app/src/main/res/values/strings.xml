@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Mafia</string>
     <string name="start_game">Start game</string>
     <string name="num_of_players">Number of players</string>
@@ -7,4 +7,43 @@
     <string name="player">Player</string>
     <string name="role_distribution">Role distribution</string>
     <string name="chooses_card">Chooses card</string>
+    <string name="day">Day</string>
+    <string name="player_already_killed">Player is already killed</string>
+    <string name="and">and</string>
+    <string name="players">Players</string>
+    <string name="voted_out_single">is voted out from the game</string>
+    <string name="voted_out_plural">are voted out from the game</string>
+    <string name="no_one_voted_out">No one is voted out</string>
+    <string name="end_day">End day</string>
+    <string name="night">Night</string>
+    <string name="end_night">End night</string>
+    <string name="proceed_to_voting">Proceed to voting</string>
+    <string name="voting_begin">Let the voting begin</string>
+    <string name="confirm">Confirm</string>
+    <string name="player_is_dead">Player is dead</string>
+    <string name="press_again">Press again to close the game</string>
+
+    <plurals name="day_has_come" tools:ignore="MissingQuantity">
+        <item quantity="one">Day %d has come</item>
+    </plurals>
+    <plurals name="night_has_come" tools:ignore="MissingQuantity">
+        <item quantity="one">Night %d has come</item>
+    </plurals>
+    <plurals name="submits" tools:ignore="MissingQuantity">
+        <item quantity="one">Player %d submits player %d for a vote</item>
+    </plurals>
+    <string name="receives_foul">receives a foul</string>
+    <string name="gets_killed_this_night">gets killed this night</string>
+    <string name="gets_imprisoned">is imprisoned by vote</string>
+    <string name="submits_self">submits themselves for a vote</string>
+    <string name="don">D</string>
+    <string name="commissioner">C</string>
+    <string name="peaceful">P</string>
+    <string name="mafia">M</string>
+    <string name="events_list">Events list</string>
+    <string name="submits_for_voting">Submits for voting…</string>
+    <string name="receives_a_foul">Receives a foul</string>
+    <string name="starts_speaking">Starts speaking</string>
+    <string name="gets_killed">Gets killed</string>
+    <string name="voted_out">Voted out</string>
 </resources>

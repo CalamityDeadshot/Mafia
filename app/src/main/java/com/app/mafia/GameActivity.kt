@@ -31,11 +31,11 @@ class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.
     var votingRunning = false
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_game)
-        announcementText = "Day 0"
+        announcementText = "${getString(R.string.day)} 0"
         super.onCreate(savedInstanceState)
         setSupportActionBar(gameToolbar)
-        supportActionBar!!.title = "Day $daysCounter"
-        mainButton.setOnClickListener(this)
+        supportActionBar!!.title = "${getString(R.string.day)} $daysCounter"
+        mainButton.setOnClickListener(this); mainButton.text = "${resources.getString(R.string.end_day)} 0"
 
         playersRecycler.layoutManager = GridLayoutManager(this, Global.calculateNoOfColumns(this, 120f))
         val players = ArrayList<PlayerModel>()
@@ -79,7 +79,7 @@ class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.
                     playerKilled = true
                     game.addEvent(GameEvent(SubjectEvent.KILL, position))
                 } else {
-                    Toast.makeText(this, "Player killed already", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, R.string.player_already_killed, Toast.LENGTH_LONG).show()
                 }
             }
             R.id.regFoul -> game.addEvent((GameEvent(SubjectEvent.FOUL, position)))
@@ -142,16 +142,23 @@ class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.
                         votingRunning = false
                         var kickedPlayers = ""
                         for (i in 0 until votedOut.size) {
-                            kickedPlayers += if (i != votedOut.size - 1) "${votedOut[i]}, "
-                            else "${if (votedOut.size == 1) "" else "and "} ${votedOut[i]}"
+                            kickedPlayers += if (i != votedOut.size - 1) "${votedOut[i]}${if (i == votedOut.size - 2) "" else ","} "
+                            else "${if (votedOut.size == 1) "" else getString(R.string.and)} ${votedOut[i]}"
                         }
-                        announce(if (votedOut.size > 0) "${if (votedOut.size == 1) "Player" else "Players"} $kickedPlayers ${if (votedOut.size == 1) "is" else "are"} voted out from the game" else "No one is voted out")
+                        announce(if (votedOut.size > 0) "${
+                            if (votedOut.size == 1) 
+                                getString(R.string.player) 
+                            else getString(R.string.players)
+                        } $kickedPlayers ${
+                            if (votedOut.size == 1) getString(R.string.voted_out_single) 
+                            else getString(R.string.voted_out_plural)
+                        }" else getString(R.string.no_one_voted_out), timeToRead = 2500)
                         adapter.views.forEach {
                             (it as PlayerCard).isBeingVoted = false
                             it.setEnabled(!it.kicked && !it.killed && !votedOut.contains(it.model.number))
                         }
                         submittedForVote.clear(); votedOut.clear()
-                        mainButton.text = "End day $daysCounter"
+                        mainButton.text = "${getString(R.string.end_day)} $daysCounter"
                         mainButton.stateSelected = false
                     }
                     return
@@ -172,17 +179,17 @@ class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.
         isDayNow = !isDayNow
         if (!isDayNow) daysCounter++
         if (isDayNow) {
-            announce("Day $daysCounter", THEME_LIGHT)
+            announce("${getString(R.string.day)} $daysCounter", THEME_LIGHT)
         } else {
-            announce("Night $daysCounter", THEME_DARK)
+            announce("${getString(R.string.night)} $daysCounter", THEME_DARK)
         }
         //announce("${if (isDayNow) "Day" else "Night"} $daysCounter", if (isDayNow) R.color.colorPrimaryLight else R.color.darkBase)
         mainButton.animate().withLayer()
             .setDuration(400)
             .alpha(1f)
             .withEndAction {
-                supportActionBar!!.title = "${if (isDayNow) "Day" else "Night"} $daysCounter"
-                mainButton.text = "End ${(if (isDayNow) "Day" else "Night").toLowerCase()} $daysCounter"
+                supportActionBar!!.title = "${if (isDayNow) getString(R.string.day) else getString(R.string.night)} $daysCounter"
+                mainButton.text = "${if (isDayNow) getString(R.string.end_day) else getString(R.string.end_night)} $daysCounter"
                 mainButton.stateSelected = false
             }
         game.addEvent(GameEvent(if (isDayNow) Event.DAY else Event.NIGHT, daysCounter))
@@ -204,7 +211,7 @@ class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.
         if (submitted != -1) {
             game.addEvent(GameEvent(ActorSubjectEvent.VOTE_SUBMIT, adapter.voteInitializer, submitted))
             if (!submittedForVote.contains(submitted)) submittedForVote.add(submitted)
-            mainButton.oldText = "Proceed to voting"
+            mainButton.oldText = getString(R.string.proceed_to_voting)
         }
         mainButton.waitingForConfirmation = false
         mainButton.stateSelected = false
@@ -212,11 +219,16 @@ class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.
 
     fun initiateVoting() {
         votingRunning = true
-        announce("Let the voting begin")
-        mainButton.text = "Confirm"
+        announce(R.string.voting_begin)
+        mainButton.text = getString(R.string.confirm)
         adapter.views.forEach {
             if (submittedForVote.contains((it as PlayerCard).model.number)) it.isBeingVoted = true
             else it.setEnabled(false)
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+
+        super.onSaveInstanceState(outState)
     }
 }

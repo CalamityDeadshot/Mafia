@@ -10,12 +10,15 @@ import com.app.mafia.GameActivity
 import com.app.mafia.R
 import com.app.mafia.helpers.Global
 import kotlinx.android.synthetic.main.main_game_button.view.*
+import java.lang.Exception
 
 class MainGameButton : ConstraintLayout, View.OnClickListener {
     var mContext: Context
     constructor(context: Context) : super(context) {
         View.inflate(context, R.layout.main_game_button, this)
         this.mContext = context
+        text = "${resources.getString(R.string.end_day)} 0"
+        textView.text = text
         endTimerButton.setOnClickListener(this)
     }
 
@@ -33,7 +36,7 @@ class MainGameButton : ConstraintLayout, View.OnClickListener {
                 .alpha(0f)
                 .setDuration(200)
                 .withEndAction {
-                    text = if (value) "Confirm" else oldText
+                    text = if (value) resources.getString(R.string.confirm) else oldText
                     textView.animate().withLayer()
                         .alpha(1f)
                         .start()
@@ -47,8 +50,10 @@ class MainGameButton : ConstraintLayout, View.OnClickListener {
             attrs,
             R.styleable.MainGameButton,
             0, 0).apply {
-            try {
-                text = getString(R.styleable.MainGameButton_text)
+            text = try {
+                getString(R.styleable.MainGameButton_text)
+            } catch (e: Exception) {
+                "${resources.getString(R.string.end_day)} 0"
             } finally {
                 recycle()
             }

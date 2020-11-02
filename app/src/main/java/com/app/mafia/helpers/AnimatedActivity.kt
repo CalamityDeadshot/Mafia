@@ -42,6 +42,7 @@ open class AnimatedActivity : AppCompatActivity(), Animator.AnimatorListener {
             activityToBeClosed = false
             fadeOut.start()
         }
+    var expandDelay = 1000L
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (hasAnnouncement) {
@@ -124,7 +125,7 @@ open class AnimatedActivity : AppCompatActivity(), Animator.AnimatorListener {
                     if (event.downTime - lastPressedTime < PERIOD) {
                         closeActivity()
                     } else {
-                        Toast.makeText(this, "Press again to close the game", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, R.string.press_again, Toast.LENGTH_LONG).show()
                         lastPressedTime = event.eventTime
                     }
                 }
@@ -168,7 +169,7 @@ open class AnimatedActivity : AppCompatActivity(), Animator.AnimatorListener {
                 } else {
                     announcement.animate().withLayer()
                         .alpha(1f)
-                        .setDuration(1000)
+                        .setDuration(expandDelay)
                         .withEndAction {
                             this.findViewById<View>(R.id.bubble).background = resources.getDrawable(if (currentTheme == THEME_LIGHT) R.drawable.pulse_circle_light else R.drawable.pulse_circle_dark)
                             supportActionBar!!.setBackgroundDrawable(ColorDrawable(resources.getColor(if (currentTheme == THEME_LIGHT) R.color.colorPrimary else R.color.dark900)))
@@ -198,9 +199,17 @@ open class AnimatedActivity : AppCompatActivity(), Animator.AnimatorListener {
         return expand.isRunning || shrink.isRunning || fadeIn.isRunning || fadeOut.isRunning || announcementFadeIn.isRunning || announcement.visibility == View.VISIBLE
     }
 
-    fun announce(text: String, theme: Int = THEME_LIGHT) {
+    fun announce(text: String, theme: Int = THEME_LIGHT, timeToRead: Long = 1000) {
         announcementText = text
         currentTheme = theme
+        expandDelay = timeToRead
+        this.baseColor = if (theme == THEME_LIGHT) R.color.colorPrimaryLight else R.color.dark800
+    }
+
+    fun announce(textId: Int, theme: Int = THEME_LIGHT, timeToRead: Long = 1000) {
+        announcementText = getString(textId)
+        currentTheme = theme
+        expandDelay = timeToRead
         this.baseColor = if (theme == THEME_LIGHT) R.color.colorPrimaryLight else R.color.dark800
     }
 }

@@ -13,8 +13,10 @@ class Global {
         var screenX = 0
         var screenY = 0
         var scaleFactor : Float = 0f
+        var context: Context = Activity()
         fun init(activity: Activity) {
             calculateScaleFactor(activity)
+            context = activity
         }
 
         private fun calculateScaleFactor(activity: Activity) {

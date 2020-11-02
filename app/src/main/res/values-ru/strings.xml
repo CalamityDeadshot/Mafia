@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Mafia</string>
+    <string name="start_game">Начать игру</string>
+    <string name="num_of_players">Количество игроков</string>
+    <string name="num_of_peaceful">Мирных игроков</string>
+    <string name="num_of_mafias">Количество мафии</string>
+    <string name="player">Игрок</string>
+    <string name="role_distribution">Распределение ролей</string>
+    <string name="chooses_card">Выбирает карту</string>
+    <string name="day">День</string>
+    <string name="player_already_killed">Игрок уже мёртв</string>
+    <string name="and">и</string>
+    <string name="players">Игроки</string>
+    <string name="voted_out_single">исключён из игры голосованием</string>
+    <string name="voted_out_plural">исключены из игры голосованием</string>
+    <string name="no_one_voted_out">Никто не исключён</string>
+    <string name="end_day">Закончить день</string>
+    <string name="night">Ночь</string>
+    <string name="end_night">Закончить ночь</string>
+    <string name="proceed_to_voting">Перейти к голосованию</string>
+    <string name="voting_begin">Голосование</string>
+    <string name="confirm">Подтвердить</string>
+    <string name="player_is_dead">Игрок мёртв</string>
+    <string name="press_again">Нажмите снова, чтобы прервать игру</string>
+
+    <plurals name="day_has_come" tools:ignore="MissingQuantity">
+        <item quantity="one">Наступил день %d</item>
+    </plurals>
+
+    <plurals name="night_has_come" tools:ignore="MissingQuantity">
+        <item quantity="one">Наступила ночь %d</item>
+    </plurals>
+
+    <plurals name="submits" tools:ignore="MissingQuantity">
+        <item quantity="one">Игрок %d выставляет на голосование игрока %d</item>
+    </plurals>
+    <string name="receives_foul">получает фол</string>
+    <string name="gets_killed_this_night">этой ночью убит</string>
+    <string name="gets_imprisoned">посажен в тюрьму голосованием</string>
+    <string name="submits_self">выставляет себя на голосование</string>
+    <string name="don">Д</string>
+    <string name="commissioner">К</string>
+    <string name="peaceful">М</string>
+    <string name="mafia">М</string>
+    <string name="events_list">События</string>
+    <string name="submits_for_voting">Выставляет на голосование…</string>
+    <string name="receives_a_foul">Получает фол</string>
+    <string name="starts_speaking">Начинает говорить</string>
+    <string name="gets_killed">Убит</string>
+    <string name="voted_out">Исключён голосованием</string>
+</resources>

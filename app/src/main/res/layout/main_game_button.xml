@@ -3,23 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/base"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
+    android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/main_button_background_light">
+    android:background="@drawable/main_button_background_light"
+    tools:layout_height="70dp">
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:layout_margin="8dp"
         android:textColor="@android:color/white"
         android:textSize="24sp"
-        android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="End day 13"
-        tools:visibility="gone"/>
+        tools:visibility="gone" />
 
     <ImageView
         android:id="@+id/animCircle"
@@ -52,25 +55,28 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/timerBase"
-        android:visibility="gone"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:alpha="0"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:visibility="visible"
-        tools:alpha="1">
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:alpha="1"
+        tools:visibility="visible">
+
         <ImageView
             android:id="@+id/timerOverlay"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:alpha="1"
             android:src="@color/design_default_color_primary"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"
             tools:alpha="1"
             tools:visibility="visible" />
 
@@ -92,15 +98,15 @@
             android:id="@+id/timerLeft"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="0:59"
             android:textColor="@android:color/white"
             android:textSize="32sp"
             android:visibility="visible"
-            android:text="0:59"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
