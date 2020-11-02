@@ -49,4 +49,8 @@
     <string name="starts_speaking">Начинает говорить</string>
     <string name="gets_killed">Убит</string>
     <string name="voted_out">Исключён голосованием</string>
+    <string name="kicked">Игрок исключён из из игры</string>
+    <string name="mafia_won">Мафия победила</string>
+    <string name="peaceful_won">Мирные люди победили</string>
+    <string name="view_events">Показать события</string>
 </resources>

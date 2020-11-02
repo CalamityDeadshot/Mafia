@@ -3,7 +3,6 @@ package com.app.mafia
 import android.animation.Animator
 import android.content.Intent
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.*
 import android.widget.AdapterView
 import android.widget.Toast
@@ -22,6 +21,7 @@ import kotlinx.android.synthetic.main.main_game_button.view.*
 
 class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.OnItemClickListener, PlayerPopupMenu.OnMenuItemClickListener, View.OnClickListener {
 
+    private var gameEnded = false
     lateinit var game: Game
     lateinit var adapter: PlayersAdapter
     var daysCounter = 0
@@ -37,7 +37,7 @@ class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.
         setSupportActionBar(gameToolbar)
         supportActionBar!!.title = "${getString(R.string.day)} $daysCounter"
         mainButton.setOnClickListener(this); mainButton.text = "${resources.getString(R.string.end_day)} $daysCounter"
-
+        viewEventsButton.setOnClickListener(this)
         playersRecycler.layoutManager = GridLayoutManager(this, Global.calculateNoOfColumns(this, 120f))
         val players = ArrayList<PlayerModel>()
         val roles: ArrayList<Roles> = (intent.extras!!.getSerializable("playerRoles") as ArrayList<Roles>)
@@ -63,7 +63,26 @@ class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.
                     if (currentTheme == THEME_LIGHT) it.setLightTheme()
                     else it.setDarkTheme()
                 }
+                if (gameEnded) {
+                    View(this).animate().withLayer()
+                        .alpha(1f)
+                        .setDuration(expandDelay - 10)
+                        .withEndAction {
+                            finish()
+                            overridePendingTransition(0, 0)
+                        }
+                }
                 //adapter.notifyDataSetChanged()
+            }
+            fadeOut -> {
+                if (gameEnded)
+                    viewEventsButton.animate().withLayer()
+                        .withStartAction {
+                            viewEventsButton.visibility = View.VISIBLE
+                        }
+                        .alpha(1f)
+                        .setDuration(300)
+                        .start()
             }
         }
         super<AnimatedActivity>.onAnimationEnd(p0)
@@ -95,7 +114,7 @@ class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.
                 game.addEvent(GameEvent(SubjectEvent.VOTE_KICK, position))
             }
         }
-
+        checkGameStatus()
         return false
     }
 
@@ -164,10 +183,15 @@ class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.
                     }
                     return
                 }
-                nextTimeCycle()
-            }
+                checkGameStatus()
 
-            playersRecycler -> mainButton.stateSelected = false
+                if (!gameEnded) nextTimeCycle()
+            }
+            viewEventsButton -> {
+                val intent = Intent(this, EventsListActivity::class.java)
+                intent.putExtra("events", game.gameEvents)
+                startActivity(intent)
+            }
         }
     }
 
@@ -226,6 +250,27 @@ class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.
             if (submittedForVote.contains((it as PlayerCard).model.number)) it.isBeingVoted = true
             else it.setEnabled(false)
         }
+    }
+
+    fun checkGameStatus() {
+        if (votingRunning) return
+        var mafias = 0; var peaceful = 0
+        (playersRecycler.adapter as PlayersAdapter).list.forEach { player ->
+            if (!player.isDead && !player.kicked) {
+                if (player.role == Roles.MAFIA || player.role == Roles.DON) mafias++
+                else peaceful++
+            }
+        }
+        if (peaceful <= mafias) {
+            println("$peaceful $mafias")
+            announce(R.string.mafia_won, THEME_DARK, 10000)
+        }
+        else if (mafias == 0) {
+            println("$peaceful $mafias")
+            announce(R.string.peaceful_won, THEME_LIGHT,10000)
+        }
+        else return
+        gameEnded = true
     }
 
     /*override fun onSaveInstanceState(outState: Bundle) {

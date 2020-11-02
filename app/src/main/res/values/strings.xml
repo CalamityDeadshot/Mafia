@@ -46,4 +46,8 @@
     <string name="starts_speaking">Starts speaking</string>
     <string name="gets_killed">Gets killed</string>
     <string name="voted_out">Voted out</string>
+    <string name="kicked">Player is kicked from the game</string>
+    <string name="mafia_won">Mafia won</string>
+    <string name="peaceful_won">Peaceful people won</string>
+    <string name="view_events">View events</string>
 </resources>

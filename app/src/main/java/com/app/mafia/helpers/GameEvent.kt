@@ -14,7 +14,7 @@ class GameEvent: Serializable {
     val EVENT_TYPE_SUBJECT = 1
     val EVENT_TYPE_ACTOR_SUBJECT = 2
     var eString: String
-    var time = "${Calendar.getInstance().get(Calendar.HOUR_OF_DAY)}:${Calendar.getInstance().get(Calendar.MINUTE)}"
+    var time = "${Calendar.getInstance().get(Calendar.HOUR_OF_DAY).toString().padStart(2, '0')}:${Calendar.getInstance().get(Calendar.MINUTE).toString().padStart(2, '0')}"
     var eventTypeGeneral: Int = TYPE_BASIC
     var eventTypeEnum: Int
     var eventSubtypeEnum: Int

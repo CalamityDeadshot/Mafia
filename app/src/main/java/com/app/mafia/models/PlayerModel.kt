@@ -11,4 +11,5 @@ class PlayerModel(var role: Roles, var number: Int) {
             }
         }
     var isDead: Boolean = false
+    var kicked = false
 }

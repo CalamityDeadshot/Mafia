@@ -82,8 +82,8 @@ class PlayersAdapter : RecyclerView.Adapter<PlayersAdapter.ViewHolder> {
 
         override fun onLongClick(view: View?): Boolean {
             val vibrator = mContext.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            if ((itemView as PlayerCard).model.isDead) {
-                Toast.makeText(mContext, R.string.player_is_dead, Toast.LENGTH_LONG).show()
+            if (list[adapterPosition].isDead || list[adapterPosition].kicked) {
+                Toast.makeText(mContext, if (list[adapterPosition].isDead) R.string.player_is_dead else R.string.kicked, Toast.LENGTH_LONG).show()
                 vibrator.vibrate(300)
                 return false
             }
@@ -100,7 +100,7 @@ class PlayersAdapter : RecyclerView.Adapter<PlayersAdapter.ViewHolder> {
                     if (view.isDark()) view.popupMenuNight.show() else view.popupMenuDay.show()
                 } else view.popupMenuVote.show()
             } else {
-                if (itemView.isSelectedForVote) itemView.isSelectedForVote = false
+                if ((itemView as PlayerCard).isSelectedForVote) itemView.isSelectedForVote = false
                 else {
                     views.forEach {
                         (it as PlayerCard).isSelectedForVote = false
@@ -160,6 +160,7 @@ class PlayersAdapter : RecyclerView.Adapter<PlayersAdapter.ViewHolder> {
                 }
                 R.id.votedOut -> {
                     itemView.kicked = true
+                    list[adapterPosition].kicked = true
                 }
             }
             itemView.onMenuItemClick(item, list[adapterPosition].number)
@@ -190,6 +191,7 @@ class PlayersAdapter : RecyclerView.Adapter<PlayersAdapter.ViewHolder> {
         //println(views[position] == holder)
         holder.itemView.foulsText.text = model.fouls.toString()
         holder.itemView.foulsText.visibility = if (model.fouls > 0) View.VISIBLE else View.INVISIBLE
+        holder.itemView.setEnabled(model.fouls < 4)
         if (holder.itemView.isDark()) holder.itemView.setDarkTheme() else holder.itemView.setLightTheme()
         //holder.itemView.showRole = model.showed
     }
