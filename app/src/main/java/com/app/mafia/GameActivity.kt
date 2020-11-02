@@ -3,6 +3,7 @@ package com.app.mafia
 import android.animation.Animator
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.*
 import android.widget.AdapterView
 import android.widget.Toast
@@ -31,11 +32,11 @@ class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.
     var votingRunning = false
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_game)
-        announcementText = "${getString(R.string.day)} 0"
+        announcementText = "${getString(R.string.day)} $daysCounter"
         super.onCreate(savedInstanceState)
         setSupportActionBar(gameToolbar)
         supportActionBar!!.title = "${getString(R.string.day)} $daysCounter"
-        mainButton.setOnClickListener(this); mainButton.text = "${resources.getString(R.string.end_day)} 0"
+        mainButton.setOnClickListener(this); mainButton.text = "${resources.getString(R.string.end_day)} $daysCounter"
 
         playersRecycler.layoutManager = GridLayoutManager(this, Global.calculateNoOfColumns(this, 120f))
         val players = ArrayList<PlayerModel>()
@@ -46,7 +47,7 @@ class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.
         adapter = PlayersAdapter(this, players, this, this)
         playersRecycler.adapter = adapter
         playersRecycler.setOnClickListener(this)
-        game = Game(this, roles)
+        game = Game()
         game.addEvent(GameEvent(Event.DAY, 0))
     }
 
@@ -227,8 +228,28 @@ class GameActivity : AnimatedActivity(), Animator.AnimatorListener, AdapterView.
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-
+    /*override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelable("game", game)
+        var listState = playersRecycler.layoutManager!!.onSaveInstanceState()
+        outState.putParcelable("list", listState)
+        outState.putInt("daysCounter", daysCounter)
+        outState.putBoolean("isDayNow", isDayNow)
+        outState.putIntegerArrayList("submittedForVote", submittedForVote)
+        outState.putIntegerArrayList("votedOut", votedOut)
+        outState.putBoolean("playerKilled", playerKilled)
+        outState.putBoolean("votingRunning", votingRunning)
         super.onSaveInstanceState(outState)
     }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        game = savedInstanceState.getParcelable<Game>("game")!!
+        playersRecycler.layoutManager!!.onRestoreInstanceState(savedInstanceState.getParcelable("list"))
+        daysCounter = savedInstanceState.getInt("daysCounter")
+        isDayNow = savedInstanceState.getBoolean("isDayNow")
+        submittedForVote = savedInstanceState.getIntegerArrayList("submittedForVote")!!
+        votedOut = savedInstanceState.getIntegerArrayList("votedOut")!!
+        playerKilled = savedInstanceState.getBoolean("playerKilled")
+        votingRunning = savedInstanceState.getBoolean("votingRunning")
+    }*/
 }
