@@ -1,7 +1,10 @@
 package com.app.mafia.views
 
 import android.content.Context
+import android.os.Build
 import android.os.CountDownTimer
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
@@ -125,6 +128,15 @@ class MainGameButton : ConstraintLayout, View.OnClickListener {
 
                             override fun onFinish() {
                                 timerRunning = false
+                                val vibrator = mContext.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                                when {
+                                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
+                                        vibrator.vibrate(VibrationEffect.createOneShot(600, VibrationEffect.DEFAULT_AMPLITUDE))
+                                    }
+                                    else -> {
+                                        vibrator.vibrate(600)
+                                    }
+                                }
                             }
                         }
                         timer.start()
